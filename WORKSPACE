@@ -7,6 +7,12 @@ http_archive(
 )
 
 http_archive(
+    name = "com_google_googlebenchmark",
+    strip_prefix = "benchmark-1.5.5",
+    urls = ["https://github.com/google/benchmark/archive/refs/tags/v1.5.5.zip"],
+)
+
+http_archive(
     name = "rules_cc",
     strip_prefix = "rules_cc-40548a2974f1aea06215272d9c2b47a14a24e556",
     urls = ["https://github.com/bazelbuild/rules_cc/archive/40548a2974f1aea06215272d9c2b47a14a24e556.zip"],

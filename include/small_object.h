@@ -1,11 +1,16 @@
+//
+// Created by root on 7/27/21.
+//
+
+#ifndef SMALL_OBJECT_ALLOCATOR_SMALL_OBJECT_H
+#define SMALL_OBJECT_ALLOCATOR_SMALL_OBJECT_H
+
 #include <stdlib.h>
 #include <cstddef>
 class SmallObject{
-  public:
+public:
     void* operator new (std::size_t size);
-    void operator new (std::size_t size);
+    void operator delete (void* p);
 };
 
-void* SmallObject::operator new(std::size_t size)
-{
-}
+#endif //SMALL_OBJECT_ALLOCATOR_SMALL_OBJECT_H
