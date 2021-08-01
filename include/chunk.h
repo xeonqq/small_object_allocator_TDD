@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <cstddef>
+#include <memory>
 
 class Chunk{
   public:
@@ -9,12 +10,8 @@ class Chunk{
     bool in(unsigned char* p, size_t num_of_chunks) const;
     bool full() const;
 
-    ~Chunk(){
-      delete head_;
-    }
-
   private:
-    unsigned char* head_;
+    std::unique_ptr<unsigned char[]> data_;
     unsigned char current_idx_;
     unsigned char available_chunks_;
 
