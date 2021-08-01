@@ -13,7 +13,6 @@ cc_test(
     srcs = glob(["test/*"]),
     deps = [
         ":small_object_allocator",
-        "@com_google_googlebenchmark//:benchmark",
         "@com_google_googletest//:gtest",
         "@com_google_googletest//:gtest_main",
     ],
