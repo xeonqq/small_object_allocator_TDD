@@ -5,12 +5,12 @@
 #include <memory>
 #include <assert.h>
 #include <iostream>
-Chunk::Chunk(size_t chunk_size, unsigned char num_of_chunks): current_idx_{0},available_chunks_{num_of_chunks}{
-    data_ = std::make_unique<unsigned char[]>(chunk_size*num_of_chunks);
+Chunk::Chunk(size_t block_size, unsigned char num_of_blocks): current_idx_{0},available_chunks_{num_of_blocks}{
+    data_ = std::make_unique<unsigned char[]>(block_size*num_of_blocks);
 
-    for (unsigned char i{0};i<num_of_chunks;)
+    for (unsigned char i{0};i<num_of_blocks;)
     {
-        auto ptr=data_.get()+i*chunk_size;
+        auto ptr=data_.get()+i*block_size;
         *ptr = ++i;
     }
 }
@@ -35,8 +35,8 @@ void Chunk::deallocate(void* ptr, size_t size){
     ++available_chunks_;
 }
 
-bool Chunk::in(unsigned char* p, size_t num_of_chunks) const{
-    return (p>data_.get()) && (p<data_.get()+num_of_chunks);
+bool Chunk::in(unsigned char* p, size_t block_size, size_t num_of_blocks) const{
+    return (p>data_.get()) && (p<data_.get()+num_of_blocks*block_size);
 }
 
 bool Chunk::full() const {
