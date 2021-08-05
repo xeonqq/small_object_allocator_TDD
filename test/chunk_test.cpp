@@ -30,6 +30,46 @@ TEST(ChunkTest, WhenAllocateOnFullyOccupiedChunk_ExpectAllocationReturnNullptr) 
     EXPECT_EQ(p, nullptr);
 }
 
+TEST(ChunkTest, WhenAllocateAndDeallocateOnNewlyConstructedChunk_ExpectAllocateAndDeallocationSuccessful) {
+    Chunk chunk{8, 16};
+    auto p = chunk.allocate(8);
+    EXPECT_EQ(*static_cast<unsigned char*>(p), 1);
+    *static_cast<int*>(p) = 42;
+    EXPECT_NE(p, nullptr);
+    chunk.deallocate(p, 8);
+    EXPECT_EQ(*static_cast<unsigned char*>(p), 1);
+}
+
+TEST(ChunkTest, WhenAssignValueToAllocatedMemory_ExpectAllValuesValid) {
+    Chunk chunk{8, 16};
+    std::vector<void*> allocated_ptrs;
+    for (size_t i{0};i<16;++i)
+    {
+        auto p = chunk.allocate(8);
+        *static_cast<size_t*>(p) = i;
+        allocated_ptrs.push_back(p);
+    }
+    for (size_t i{0};i<16;++i)
+    {
+        EXPECT_EQ(*static_cast<size_t*>(allocated_ptrs[i]), i);
+    }
+}
+
+TEST(ChunkTest, WhenDeallocatingOnFullChunk_ThenAllocateAgain_TheSameAddressDeallocatedShouldBeUsed) {
+    Chunk chunk{8, 16};
+    std::vector<void*> allocated_ptrs;
+    for (size_t i{0};i<16;++i)
+    {
+        auto p = chunk.allocate(8);
+        *static_cast<size_t*>(p) = i;
+        allocated_ptrs.push_back(p);
+    }
+    chunk.deallocate(allocated_ptrs[7], 8 );
+    auto p = chunk.allocate(8);
+
+    EXPECT_EQ(p, allocated_ptrs[7]);
+}
+
 TEST(ChunkTest, WhenAllocateAndDeallocateRandomly_ExpectDeallocatedMemoryCanBeReused) {
 
     unsigned char num_of_chunks = 128;

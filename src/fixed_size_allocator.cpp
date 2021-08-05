@@ -16,22 +16,5 @@ void* FixedSizeAllocator::allocate(std::size_t size)
 }
 
 void FixedSizeAllocator::deallocate(void* p, std::size_t size){
-    bool in_chunk = chunks_[last_deallocated_chunk_idx_].in(static_cast<unsigned char*>(p), num_of_chunks_);
-    if (!in_chunk)
-    {
-        for (size_t i{0}; i<chunks_.size(); ++i)
-        {
-            if (chunks_[i].in(static_cast<unsigned char*>(p), num_of_chunks_))
-            {
-                last_allocated_chunk_idx_ = i;
-                break;
-            }
-        }
-    }
-    chunks_[last_allocated_chunk_idx_].deallocate(static_cast<unsigned char*>(p), size);
-    if (chunks_[last_deallocated_chunk_idx_].full())
-    {
-
-    }
-
+    last_active_chunk_->deallocate(p, size);
 }
