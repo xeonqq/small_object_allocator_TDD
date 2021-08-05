@@ -23,19 +23,19 @@ TEST(FixedSizeAllocatorTest, WhenAllocateAndDeallocateOnNewlyConstructedChunk_Ex
 }
 
 TEST(FixedSizeAllocatorTest, WhenAllocatedMoreThanOneChunk_ExpectAllSuccessfull) {
-    unsigned char num_of_chunks = 16;
-    FixedSizeAllocator fixed_size_allocator{8, num_of_chunks};
-    for (size_t i{0};i<static_cast<size_t>(num_of_chunks)*10;++i)
+    unsigned char num_of_blocks = 16;
+    FixedSizeAllocator fixed_size_allocator{8, num_of_blocks};
+    for (size_t i{0};i<static_cast<size_t>(num_of_blocks)*10;++i)
     {
         auto p = fixed_size_allocator.allocate(8);
         EXPECT_NE(p, nullptr);
     }
 }
-TEST(FixedSizeAllocatorTest, DISABLED_WhenAllocatedAndDeallocateMoreThanOneChunk_ExpectAllSuccessfull) {
-    unsigned char num_of_chunks = 16;
-    FixedSizeAllocator fixed_size_allocator{8, num_of_chunks};
+TEST(FixedSizeAllocatorTest, WhenAllocatedAndDeallocateMoreThanOneChunk_ExpectAllSuccessfull) {
+    unsigned char num_of_blocks = 16;
+    FixedSizeAllocator fixed_size_allocator{8, num_of_blocks};
     std::vector<void*> allocated;
-    for (size_t i{0};i<static_cast<size_t>(num_of_chunks)*10;++i)
+    for (size_t i{0};i<static_cast<size_t>(num_of_blocks)*10;++i)
     {
         auto p = fixed_size_allocator.allocate(8);
         *static_cast<long*>(p) = 42;
@@ -47,4 +47,20 @@ TEST(FixedSizeAllocatorTest, DISABLED_WhenAllocatedAndDeallocateMoreThanOneChunk
     {
         fixed_size_allocator.deallocate(p, 8);
     }
+}
+
+TEST(FixedSizeAllocatorTest, WhenDeallocatingOnFullChunk_ThenAllocateAgain_TheSameAddressDeallocatedShouldBeUsed) {
+    unsigned char num_of_blocks = 16;
+    FixedSizeAllocator fixed_size_allocator{8, num_of_blocks};
+    std::vector<void*> allocated_ptrs;
+    for (size_t i{0};i<num_of_blocks*3;++i)
+    {
+        auto p = fixed_size_allocator.allocate(8);
+        *static_cast<size_t*>(p) = i;
+        allocated_ptrs.push_back(p);
+    }
+    fixed_size_allocator.deallocate(allocated_ptrs[7], 8 );
+    auto p = fixed_size_allocator.allocate(8);
+
+    EXPECT_EQ(p, allocated_ptrs[7]);
 }

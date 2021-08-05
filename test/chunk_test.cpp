@@ -19,9 +19,9 @@ TEST(ChunkTest, WhenAllocateOnNewlyConstructedChunk_ExpectAllocateSuccessful) {
 
 TEST(ChunkTest, WhenAllocateOnFullyOccupiedChunk_ExpectAllocationReturnNullptr) {
 
-    unsigned char num_of_chunks = 128;
-    Chunk chunk{8, num_of_chunks};
-    for (unsigned i{0};i<num_of_chunks;++i)
+    unsigned char num_of_blocks = 128;
+    Chunk chunk{8, num_of_blocks};
+    for (unsigned i{0};i<num_of_blocks;++i)
     {
         auto p = chunk.allocate(8);
         EXPECT_NE(p, nullptr);
@@ -72,10 +72,10 @@ TEST(ChunkTest, WhenDeallocatingOnFullChunk_ThenAllocateAgain_TheSameAddressDeal
 
 TEST(ChunkTest, WhenAllocateAndDeallocateRandomly_ExpectDeallocatedMemoryCanBeReused) {
 
-    unsigned char num_of_chunks = 128;
-    Chunk chunk{8, num_of_chunks};
+    unsigned char num_of_blocks = 128;
+    Chunk chunk{8, num_of_blocks};
     std::vector<void* > ptrs;
-    for (unsigned i{0};i<num_of_chunks/2;++i)
+    for (unsigned i{0};i<num_of_blocks/2;++i)
     {
         auto p = chunk.allocate(8);
         EXPECT_NE(p, nullptr);
@@ -91,7 +91,7 @@ TEST(ChunkTest, WhenAllocateAndDeallocateRandomly_ExpectDeallocatedMemoryCanBeRe
     }
 
     //try to allocate all again
-    for (unsigned i{0};i<num_of_chunks;++i)
+    for (unsigned i{0};i<num_of_blocks;++i)
     {
         auto p = chunk.allocate(8);
         EXPECT_NE(p, nullptr);

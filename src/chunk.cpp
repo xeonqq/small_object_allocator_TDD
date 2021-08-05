@@ -35,8 +35,8 @@ void Chunk::deallocate(void* ptr, size_t size){
     ++available_chunks_;
 }
 
-bool Chunk::in(unsigned char* p, size_t block_size, size_t num_of_blocks) const{
-    return (p>data_.get()) && (p<data_.get()+num_of_blocks*block_size);
+bool Chunk::has(void *p, size_t block_size, size_t num_of_blocks) const{
+    return (p>=data_.get()) && (p<(data_.get()+num_of_blocks*block_size));
 }
 
 bool Chunk::full() const {

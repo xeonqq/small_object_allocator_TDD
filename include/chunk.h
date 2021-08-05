@@ -7,7 +7,7 @@ class Chunk{
     Chunk(size_t block_size, unsigned char num_of_blocks);
     void* allocate(size_t size);
     void deallocate(void* p, size_t size);
-    bool in(unsigned char* p, size_t block_size, size_t num_of_blocks) const;
+    bool has(void *p, size_t block_size, size_t num_of_blocks) const;
     bool full() const;
 
   private:
