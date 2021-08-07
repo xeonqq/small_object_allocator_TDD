@@ -9,6 +9,7 @@ class Chunk{
     void deallocate(void* p, size_t size);
     bool has(void *p, size_t block_size, size_t num_of_blocks) const;
     bool full() const;
+    bool empty(size_t num_of_blocks) const;
 
   private:
     std::unique_ptr<unsigned char[]> data_;

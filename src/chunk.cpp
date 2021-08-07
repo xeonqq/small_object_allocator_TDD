@@ -42,3 +42,7 @@ bool Chunk::has(void *p, size_t block_size, size_t num_of_blocks) const{
 bool Chunk::full() const {
     return available_chunks_ == 0;
 }
+
+bool Chunk::empty(size_t num_of_blocks) const {
+    return available_chunks_ == num_of_blocks;
+}

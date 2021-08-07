@@ -5,24 +5,52 @@
 #include "include/fixed_size_allocator.h"
 #include <assert.h>
 #include <algorithm>
+#include <algorithm>
 
 void *FixedSizeAllocator::allocate(std::size_t size) {
-    auto p = last_active_chunk_->allocate(size);
+    auto p = alloc_chunk_->allocate(size);
     if (p == nullptr) {
-        last_active_chunk_ = &chunks_.emplace_back(block_size_, num_of_blocks_);
-        p = last_active_chunk_->allocate(size);
+        auto it = std::find_if(chunks_.begin(), chunks_.end(),
+                               [p, this](const Chunk &chunk) { return !chunk.full(); });
+        if (it != chunks_.end()) {
+            p = it->allocate(size);
+            alloc_chunk_ = &(*it);
+        } else {
+            alloc_chunk_ = &chunks_.emplace_back(block_size_, num_of_blocks_);
+            dealloc_chunk_ = alloc_chunk_;
+            p = alloc_chunk_->allocate(size);
+        }
     }
+
     return p;
 }
 
 void FixedSizeAllocator::deallocate(void *p, std::size_t size) {
-    if (last_active_chunk_->has(p, block_size_, num_of_blocks_)) {
-        last_active_chunk_->deallocate(p, size);
+    if (dealloc_chunk_->has(p, block_size_, num_of_blocks_)) {
+        dealloc_chunk_->deallocate(p, size);
     } else {
         auto it = std::find_if(chunks_.begin(), chunks_.end(),
                                [p, this](const Chunk &chunk) { return chunk.has(p, block_size_, num_of_blocks_); });
-        assert(it!=chunks_.end());
+        assert(it != chunks_.end());
         it->deallocate(p, size);
-        last_active_chunk_ = &(*it);
+        dealloc_chunk_ = &(*it);
     }
+
+    if (dealloc_chunk_->empty(num_of_blocks_)) {
+
+        auto empty_chunk_it = chunks_.begin() + std::distance(chunks_.data(), dealloc_chunk_);
+
+        if (has_already_one_chunk_empty()) {
+            std::iter_swap(empty_chunk_it, chunks_.end() - 2);
+            chunks_.erase(std::prev(chunks_.end()));
+        } else {
+            std::iter_swap(empty_chunk_it, std::prev(chunks_.end()));
+        }
+        alloc_chunk_ = &chunks_.back();
+        dealloc_chunk_ = alloc_chunk_;
+    }
+}
+
+bool FixedSizeAllocator::has_already_one_chunk_empty() const {
+    return ((dealloc_chunk_ != &chunks_.back()) && (chunks_.back().empty(num_of_blocks_)));
 }

@@ -8,9 +8,9 @@
 #include <gtest/gtest.h>
 #include <algorithm>
 #include <random>
+#include <memory>
 
 #include "include/chunk.h"
-
 TEST(ChunkTest, WhenAllocateOnNewlyConstructedChunk_ExpectAllocateSuccessful) {
     Chunk chunk{8, 128};
     auto p =chunk.allocate(8);
@@ -26,6 +26,7 @@ TEST(ChunkTest, WhenAllocateOnFullyOccupiedChunk_ExpectAllocationReturnNullptr) 
         auto p = chunk.allocate(8);
         EXPECT_NE(p, nullptr);
     }
+    EXPECT_TRUE(chunk.full());
     auto p = chunk.allocate(8);
     EXPECT_EQ(p, nullptr);
 }
@@ -38,6 +39,7 @@ TEST(ChunkTest, WhenAllocateAndDeallocateOnNewlyConstructedChunk_ExpectAllocateA
     EXPECT_NE(p, nullptr);
     chunk.deallocate(p, 8);
     EXPECT_EQ(*static_cast<unsigned char*>(p), 1);
+    EXPECT_TRUE(chunk.empty(16));
 }
 
 TEST(ChunkTest, WhenAssignValueToAllocatedMemory_ExpectAllValuesValid) {
@@ -98,6 +100,4 @@ TEST(ChunkTest, WhenAllocateAndDeallocateRandomly_ExpectDeallocatedMemoryCanBeRe
     }
     auto p = chunk.allocate(8);
     EXPECT_EQ(p, nullptr);
-
-
 }
