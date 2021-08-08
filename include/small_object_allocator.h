@@ -21,6 +21,8 @@ private:
 private:
     std::vector<FixedSizeAllocator> fixed_size_allocators_;
     size_t num_blocks_per_chunk_;
+    FixedSizeAllocator* last_alloc_;
+    FixedSizeAllocator* last_dealloc_;
 
 };
 
