@@ -1,3 +1,5 @@
+#ifndef SMALL_OBJECT_ALLOCATOR_CHUNK_H
+#define SMALL_OBJECT_ALLOCATOR_CHUNK_H
 #include <stdlib.h>
 #include <cstddef>
 #include <memory>
@@ -18,3 +20,4 @@ class Chunk{
 
 };
 
+#endif

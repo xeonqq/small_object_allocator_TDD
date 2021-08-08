@@ -1,3 +1,6 @@
+
+#ifndef SMALL_OBJECT_ALLOCATOR_FIXED_SIZE_ALLOCATOR_H
+#define SMALL_OBJECT_ALLOCATOR_FIXED_SIZE_ALLOCATOR_H
 #include <stdlib.h>
 #include <cstddef>
 #include <vector>
@@ -32,4 +35,4 @@ private:
 
 };
 
-
+#endif // SMALL_OBJECT_ALLOCATOR_FIXED_SIZE_ALLOCATOR

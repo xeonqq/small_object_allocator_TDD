@@ -8,10 +8,11 @@
 template<typename T>
 class Singleton{
 public:
-    static T& get_instance() {
+    template <typename... Args>
+    static T& get_instance(Args... args) {
         static std::unique_ptr<T> singleton;
         if (!singleton){
-            singleton = std::make_unique<T>();
+            singleton = std::make_unique<T>(std::forward<Args>(args)...);
         }
         return *singleton.get();
 

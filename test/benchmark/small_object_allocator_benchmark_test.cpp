@@ -19,6 +19,7 @@ struct Algorithm: public AllocationPolicy
 template<typename AllocationPolicy>
 struct BFS: Algorithm<AllocationPolicy>{
     virtual void run() override {};
+    float internal_variable;
 };
 
 template<typename AllocationPolicy>
