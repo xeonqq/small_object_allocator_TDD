@@ -23,11 +23,15 @@ TEST(SmallObjectAllocatorTest, WhenAllocatingDifferentSize_ExpectReturnNonNullPt
     EXPECT_EQ(small_object_allocator.num_of_fixed_size_allocators(),2);
 }
 
-TEST(SmallObjectAllocatorTest, WhenDeallocate_ExpectSuccess) {
+TEST(SmallObjectAllocatorTest, WhenDeallocate_ExpectSuccessAndDeallocatedMemoryShouldBeReusedAfterNextAllocation) {
     SmallObjectAllocator small_object_allocator(8);
     auto p1=small_object_allocator.allocate(4);
     auto p2=small_object_allocator.allocate(8);
     small_object_allocator.deallocate(p1, 4);
     small_object_allocator.deallocate(p2,8);
+    auto new_p1=small_object_allocator.allocate(4);
+    auto new_p2=small_object_allocator.allocate(8);
     EXPECT_EQ(small_object_allocator.num_of_fixed_size_allocators(),2);
+    EXPECT_EQ(p1, new_p1);
+    EXPECT_EQ(p2, new_p2);
 }
