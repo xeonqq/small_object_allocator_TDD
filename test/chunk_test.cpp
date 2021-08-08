@@ -2,13 +2,11 @@
 // Created by qq on 02.03.19.
 //
 
-#include <memory>
-#include <vector>
 
 #include <gtest/gtest.h>
 #include <algorithm>
 #include <random>
-#include <memory>
+#include <vector>
 
 #include "include/chunk.h"
 TEST(ChunkTest, WhenAllocateOnNewlyConstructedChunk_ExpectAllocateSuccessful) {
