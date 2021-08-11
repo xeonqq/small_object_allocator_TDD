@@ -28,6 +28,26 @@ TEST(ChunkTest, WhenAllocateOnFullyOccupiedChunk_ExpectAllocationReturnNullptr) 
     auto p = chunk.allocate(8);
     EXPECT_EQ(p, nullptr);
 }
+class ChunkTestParamFixture :public ::testing::TestWithParam<size_t> {
+};
+INSTANTIATE_TEST_CASE_P(
+        ChunkParamTest,
+        ChunkTestParamFixture,
+        ::testing::Values(
+                4,8,16,32
+        ));
+TEST_P(ChunkTestParamFixture, WhenAllocatingContinuously_ExpectAllocatedMemoryHasInceasingAddressWithSameInterval) {
+    auto block_size = GetParam();
+    Chunk chunk{block_size, 128};
+    auto p = chunk.allocate(block_size);
+    for (size_t i{0};i<128-1;++i)
+    {
+        auto new_p = chunk.allocate(block_size);
+        size_t mem_diff = static_cast<u_char*>(new_p)-static_cast<u_char *>(p);
+        p = new_p;
+        EXPECT_EQ(mem_diff, block_size);
+    }
+}
 
 TEST(ChunkTest, WhenAllocateAndDeallocateOnNewlyConstructedChunk_ExpectAllocateAndDeallocationSuccessful) {
     Chunk chunk{8, 16};
