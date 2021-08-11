@@ -6,6 +6,7 @@
 #include <fstream>
 
 #include "include/fixed_size_allocator.h"
+#include "test/param_test_fixture.h"
 
 TEST(FixedSizeAllocatorTest, WhenAllocateOnNewlyConstructedChunk_ExpectAllocateSuccessful) {
     FixedSizeAllocator fixed_size_allocator{8, 16};
@@ -102,5 +103,24 @@ TEST(FixedSizeAllocatorTest,
         EXPECT_EQ(new_p, p);
         fixed_size_allocator.deallocate(new_p, 8);
         EXPECT_EQ(fixed_size_allocator.number_of_chunks(), 2);
+    }
+}
+
+INSTANTIATE_TEST_CASE_P(
+        FixedSizeAllocatorParamTest,
+        BlockSizeParamTestFixture,
+        ::testing::Values(
+                4,8,16,32
+        ));
+TEST_P(BlockSizeParamTestFixture, WhenFixedSizeAllocatorAllocatingContinuously_ExpectAllocatedMemoryHasInceasingAddressWithSameInterval) {
+    auto block_size = GetParam();
+    FixedSizeAllocator fixed_size_allocator{block_size, 128};
+    auto p = fixed_size_allocator.allocate(block_size);
+    for (size_t i{0};i<128-1;++i)
+    {
+        auto new_p = fixed_size_allocator.allocate(block_size);
+        size_t mem_diff = static_cast<u_char*>(new_p)-static_cast<u_char *>(p);
+        p = new_p;
+        EXPECT_EQ(mem_diff, block_size);
     }
 }

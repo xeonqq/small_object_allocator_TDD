@@ -9,6 +9,8 @@
 #include <vector>
 
 #include "include/chunk.h"
+#include "test/param_test_fixture.h"
+
 TEST(ChunkTest, WhenAllocateOnNewlyConstructedChunk_ExpectAllocateSuccessful) {
     Chunk chunk{8, 128};
     auto p =chunk.allocate(8);
@@ -28,15 +30,14 @@ TEST(ChunkTest, WhenAllocateOnFullyOccupiedChunk_ExpectAllocationReturnNullptr) 
     auto p = chunk.allocate(8);
     EXPECT_EQ(p, nullptr);
 }
-class ChunkTestParamFixture :public ::testing::TestWithParam<size_t> {
-};
+
 INSTANTIATE_TEST_CASE_P(
-        ChunkParamTest,
-        ChunkTestParamFixture,
+        ParamTest,
+        BlockSizeParamTestFixture,
         ::testing::Values(
                 4,8,16,32
         ));
-TEST_P(ChunkTestParamFixture, WhenAllocatingContinuously_ExpectAllocatedMemoryHasInceasingAddressWithSameInterval) {
+TEST_P(BlockSizeParamTestFixture, WhenAllocatingContinuously_ExpectAllocatedMemoryHasInceasingAddressWithSameInterval) {
     auto block_size = GetParam();
     Chunk chunk{block_size, 128};
     auto p = chunk.allocate(block_size);
