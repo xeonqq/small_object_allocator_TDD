@@ -16,7 +16,8 @@ void *FixedSizeAllocator::allocate(std::size_t size) {
             p = it->allocate(size);
             alloc_chunk_ = &(*it);
         } else {
-            alloc_chunk_ = &chunks_.emplace_back(block_size_, num_of_blocks_);
+            chunks_.emplace_back(block_size_, num_of_blocks_);
+            alloc_chunk_ = &chunks_.back();
             dealloc_chunk_ = alloc_chunk_;
             p = alloc_chunk_->allocate(size);
         }

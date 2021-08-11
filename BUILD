@@ -6,6 +6,7 @@ cc_library(
         "src/*.cpp",
     ]),
     hdrs = glob(["include/*.h"]),
+    deps = ["@loki"],
 )
 
 cc_test(

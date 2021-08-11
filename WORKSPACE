@@ -17,3 +17,11 @@ http_archive(
     strip_prefix = "rules_cc-40548a2974f1aea06215272d9c2b47a14a24e556",
     urls = ["https://github.com/bazelbuild/rules_cc/archive/40548a2974f1aea06215272d9c2b47a14a24e556.zip"],
 )
+
+http_archive(
+    name = "loki",
+    build_file = "@//:third_party/loki/loki.BUILD",
+    sha256 = "9ce81af9ed1a1d8cfaafb2f98685691666f4af4a1243b8afb3b6cc1b1b99435c",
+    strip_prefix = "loki-0.1.7",
+    urls = ["https://deac-fra.dl.sourceforge.net/project/loki-lib/Loki/Loki%200.1.7/loki-0.1.7.zip"],
+)

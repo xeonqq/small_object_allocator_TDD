@@ -16,7 +16,8 @@ void *SmallObjectAllocator::allocate(std::size_t size) {
     } else {
         auto it = find_matching_fixed_size_allocator(size);
         if (it == fixed_size_allocators_.end()) {
-            last_alloc_ = &fixed_size_allocators_.emplace_back(size, num_blocks_per_chunk_);
+            fixed_size_allocators_.emplace_back(size, num_blocks_per_chunk_);
+            last_alloc_ = &fixed_size_allocators_.back();
             p = last_alloc_->allocate(size);
             last_dealloc_ = last_alloc_;
         } else {
