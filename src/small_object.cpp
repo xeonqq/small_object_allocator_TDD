@@ -9,9 +9,10 @@
 
 void* SmallObject::operator new(std::size_t size)
 {
-//    std::cerr << "allocate: " << size << std::endl;
     auto& allocator = Singleton<SmallObjectAllocator>::get_instance(255);
-    return allocator.allocate(size);
+    auto p = allocator.allocate(size);
+//    std::cout << "allocated: " << size <<" @ " << p <<  std::endl;
+    return p;
 }
 
 void SmallObject::operator delete (void* p, std::size_t size)

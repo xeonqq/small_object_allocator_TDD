@@ -29,11 +29,22 @@ void FixedSizeAllocator::deallocate(void *p, std::size_t size) {
     if (dealloc_chunk_->has(p, block_size_, num_of_blocks_)) {
         dealloc_chunk_->deallocate(p, size);
     } else {
-        auto it = std::find_if(chunks_.begin(), chunks_.end(),
-                               [p, this](const Chunk &chunk) { return chunk.has(p, block_size_, num_of_blocks_); });
-        assert(it != chunks_.end());
-        it->deallocate(p, size);
-        dealloc_chunk_ = &(*it);
+        auto it_forward=dealloc_chunk_;
+        const auto* rend = (&chunks_.front())-1;
+        const auto* end = &(chunks_.back())+1;
+        while(true)
+        {
+            if (++it_forward!=end && it_forward->has(p, block_size_, num_of_blocks_))
+            {
+                dealloc_chunk_ = it_forward;
+                break;
+            }
+            if (--dealloc_chunk_ != rend && dealloc_chunk_->has(p, block_size_, num_of_blocks_))
+            {
+                break;
+            }
+        }
+        dealloc_chunk_->deallocate(p, size);
     }
 
     if (dealloc_chunk_->empty(num_of_blocks_)) {
