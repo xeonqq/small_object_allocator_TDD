@@ -8,6 +8,7 @@
 #include <gtest/gtest.h>
 #include "include/small_object.h"
 #include "include/small_object_malloc.h"
+#include <loki/SmallObj.h>
 
 template<typename AllocationPolicy>
 struct Algorithm: public AllocationPolicy
@@ -64,8 +65,16 @@ static void BM_SmallObjectAllocatorCustom(benchmark::State& state) {
         allocate_deallocate_small_objects<SmallObject>(state);
     }
 }
+static void BM_SmallObjectAllocatorLoki(benchmark::State& state) {
+    // Perform setup here
+    for (auto _ : state) {
+        // This code gets timed
+        allocate_deallocate_small_objects<Loki::SmallObject<>>(state);
+    }
+}
 // Register the function as a benchmark
 BENCHMARK(BM_SmallObjectAllocatorMalloc)->Unit(benchmark::kMillisecond)->Range(1<<4, 1<<10);
 BENCHMARK(BM_SmallObjectAllocatorCustom)->Unit(benchmark::kMillisecond)->Range(1<<4, 1<<10);
+BENCHMARK(BM_SmallObjectAllocatorLoki)->Unit(benchmark::kMillisecond)->Range(1<<4, 1<<10);
 // Run the benchmark
 //BENCHMARK_MAIN();
